@@ -29,12 +29,12 @@ upstream {{ $subdir }} {
 {{ define "locations" }}
 {{ range $subdir, $containers := groupByMulti $ "Env.NGINX_PROXY_SUBDIRECTORY" "," }}
 	location /{{ $subdir }} {
-	{{ $c := where $containers "Env.NGINX_PROXY_SUBDIRECTORY_MAP_TO_ROOT" "1" }}
-	{{ $l := len $c }}
-	{{ if eq $l 0 }}
-		proxy_pass http://{{ $subdir }};
+	{{ $proto := or (first (groupByKeys $containers "Env.VIRTUAL_PROTO")) "http" }}
+	{{ $map_to_root := or (first (groupByKeys $containers "Env.NGINX_PROXY_SUBDIRECTORY_MAP_TO_ROOT")) "1" }}
+	{{ if eq $map_to_root "1" }}
+		proxy_pass {{ $proto }}://{{ $subdir }}/;
 	{{ else }}
-		proxy_pass http://{{ $subdir }}/;
+		proxy_pass {{ $proto }}://{{ $subdir }};
 	{{ end }}
 	{{ if (exists (printf "/etc/nginx/htpasswd/%s" $subdir)) }}
 		auth_basic	"Restricted {{ $subdir }}";
