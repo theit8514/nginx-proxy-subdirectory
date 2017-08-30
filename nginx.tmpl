@@ -28,7 +28,13 @@ upstream {{ $subdir }} {
 
 {{ define "locations" }}
 {{ range $subdir, $containers := groupByMulti $ "Env.NGINX_PROXY_SUBDIRECTORY" "," }}
-	location /{{ $subdir }} {
+        {{ $trailing_slash := or (first (groupByKeys $containers "Env.NGINX_PROXY_SUBDIRECTORY_TRAILING_SLASH")) "1" }}
+        {{ if eq $trailing_slash "1" }}
+        location /{{ $subdir }}/ {
+        {{ else }}
+        location /{{ $subdir }} {
+        {{ end }}
+
 	{{ $proto := or (first (groupByKeys $containers "Env.VIRTUAL_PROTO")) "http" }}
 	{{ $map_to_root := or (first (groupByKeys $containers "Env.NGINX_PROXY_SUBDIRECTORY_MAP_TO_ROOT")) "1" }}
 	{{ if eq $map_to_root "1" }}
