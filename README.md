@@ -9,4 +9,5 @@ A docker image based on jwilder/nginx-proxy which modifies the template to have 
 
 * NGINX_PROXY_SUBDIRECTORY [REQUIRED]: Specifies the subdirectory to use for this container. If multiple containers have the same subdirectory, nginx will load balance those requests.
 * NGINX_PROXY_SUBDIRECTORY_MAP_TO_ROOT: If 0, maps /$subdir to /$subdir. If 1, maps /$subdir to /. Defaults to 1.
+* NGINX_PROXY_SUBDIRECTORY_TRAILING_SLASH: If 0, location is /$subdir. If 1, location is /$subdir/. Defaults to 1.
 * VIRTUAL_PROTO: Protocol to use for connection to backend container. Defaults to http.
